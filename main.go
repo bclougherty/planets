@@ -1,6 +1,8 @@
 package main
 
 import (
+	"flag"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -14,10 +16,12 @@ import (
 	"github.com/spf13/viper"
 )
 
-var appAddr string
+var port int
 
 func init() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
+
+	flag.IntVar(&port, "port", 80, "What port to listen on")
 }
 
 func main() {
@@ -35,9 +39,6 @@ func main() {
 
 	viper.Set("FullViewPath", path.Join(viper.GetString("AppRoot"), viper.GetString("ViewPath")))
 
-	fs := http.FileServer(http.Dir("views/static"))
-	http.Handle("/static/", http.StripPrefix("/static/", fs))
-
 	// Instantiate controllers
 	public := controllers.NewPublicController()
 
@@ -52,9 +53,13 @@ func main() {
 		}
 	}
 
+	router.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("views/static"))))
+
 	http.Handle("/", router)
 
-	err = http.ListenAndServe(":80", router)
+	flag.Parse()
+
+	err = http.ListenAndServe(fmt.Sprintf(":%d", port), router)
 
 	if err != nil {
 		log.Fatal(err)
