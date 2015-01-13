@@ -37,7 +37,7 @@ type indexData struct {
 func (controller *Public) Index(w http.ResponseWriter, r *http.Request) {
 	rand.Seed(time.Now().UTC().UnixNano())
 
-	planet, err := swplanetgen.GeneratePlanet()
+	planet, err := swplanetgen.GeneratePlanet(viper.GetString("DatabaseConnectionString"))
 	if err != nil {
 		viewData := &indexData{
 			Error: err,

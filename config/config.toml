@@ -1,2 +1,3 @@
 
 ViewPath = "views"
+DatabaseConnectionString = "swplanetgenapp:sqplanetgenapp!pass@/swplanetgen"
