@@ -35,6 +35,9 @@ func main() {
 
 	viper.Set("FullViewPath", path.Join(viper.GetString("AppRoot"), viper.GetString("ViewPath")))
 
+	fs := http.FileServer(http.Dir("views/static"))
+	http.Handle("/static/", http.StripPrefix("/static/", fs))
+
 	// Instantiate controllers
 	public := controllers.NewPublicController()
 
@@ -50,9 +53,6 @@ func main() {
 	}
 
 	http.Handle("/", router)
-
-	fs := http.FileServer(http.Dir("views/static"))
-	http.Handle("/static/", http.StripPrefix("/static/", fs))
 
 	err = http.ListenAndServe(":80", router)
 
