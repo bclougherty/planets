@@ -3,7 +3,6 @@ package main
 import (
 	"log"
 	"net/http"
-	"net/http/fcgi"
 	"os"
 	"path"
 	"runtime"
@@ -19,7 +18,6 @@ var appAddr string
 
 func init() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
-	appAddr = os.Getenv("APP_ADDR") // e.g. "0.0.0.0:8080" or ""
 }
 
 func main() {
@@ -56,11 +54,7 @@ func main() {
 	fs := http.FileServer(http.Dir("views/static"))
 	http.Handle("/static/", http.StripPrefix("/static/", fs))
 
-	if appAddr != "" { // Run as a local web server
-		err = http.ListenAndServe(appAddr, router)
-	} else { // Run as FCGI via standard I/O
-		err = fcgi.Serve(nil, router)
-	}
+	err = http.ListenAndServe(":80", router)
 
 	if err != nil {
 		log.Fatal(err)
