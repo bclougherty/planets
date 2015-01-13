@@ -1,0 +1,67 @@
+{{define "title"}}Planet Generator{{end}}
+
+{{define "content"}}
+	<table class="table table-striped table-bordered">
+	{{ range $name, $category := .Categories }}
+		<tr>
+			<td>{{ $name }}</td>
+			<td>
+				<dl>
+					<dt>{{ $category.Name }}</dt>
+					<dd>{{ $category.Description }}</dd>
+				</dl>
+
+			{{ if len $category.Incompatibilities }}
+				<dl>
+					<dt>Incompatibilities</dt>
+					<dd>
+						<ul>
+						{{ range $category.Incompatibilities }}
+							<li>{{.Description}}</li>
+						{{ end }}
+						</ul>
+					</dd>
+				</dl>
+			{{end}}
+
+			{{ if len $category.Modifiers }}
+				<dl>
+					<dt>Modifiers</dt>
+					<dd>
+						<ul>
+						{{ range $category.Modifiers }}
+							<li>{{.CategoryDescription}} {{.ModifierDirection}}{{.Amount}}</li>
+						{{ end }}
+						</ul>
+					</dd>
+				</dl>
+			{{end}}
+			</td>
+		</tr>
+	{{ end }}
+		<tr>
+			<td>Hours per Day</td>
+			<td>
+				<dl>
+					<dt>{{.HoursPerDay}}</dt>
+				</dl>
+			</td>
+		</tr>
+		<tr>
+			<td>Days per Year</td>
+			<td>
+				<dl>
+					<dt>{{.DaysPerYear}}</dt>
+				</dl>
+			</td>
+		</tr>
+		<tr>
+			<td>Population</td>
+			<td>
+				<dl>
+					<dt>{{.Population}}</dt>
+				</dl>
+			</td>
+		</tr>
+	</table>
+{{end}}

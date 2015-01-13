@@ -1,0 +1,12 @@
+{{define "title"}}Planet Generator - Incompatible Conditions{{end}}
+
+{{define "content"}}
+	<table class="table table-striped table-bordered">
+	{{range .Incompatibilities}}
+		<tr>
+			<td><strong>{{.Category}}</strong> {{.Name}}</td>
+			<td><strong>{{.IncompatibleCategory}}</strong> {{.IncompatibleName}}</td>
+		</tr>
+	{{end}}
+	</table>
+{{end}}
