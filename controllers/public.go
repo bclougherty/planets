@@ -35,7 +35,25 @@ type indexData struct {
 
 // Index page
 func (controller *Public) Index(w http.ResponseWriter, r *http.Request) {
-	rand.Seed(time.Now().UTC().UnixNano())
+	requestedParams := make(map[int]string)
+	possibleParams := []int{
+		swplanetgen.CategoryFunction,
+		swplanetgen.CategoryGovernment,
+		swplanetgen.CategoryType,
+		swplanetgen.CategoryTerrain,
+		swplanetgen.CategoryTemperature,
+		swplanetgen.CategoryGravity,
+		swplanetgen.CategoryAtmosphere,
+		swplanetgen.CategoryHydrosphere,
+		swplanetgen.CategoryStarport,
+		swplanetgen.CategoryTechlevel,
+	}
+
+	for _, category := range possibleParams {
+		if val := r.URL.Query().Get(fmt.Sprintf("%d", category)); len(val) > 0 {
+			requestedParams[category] = val
+		}
+	}
 
 	planet, err := swplanetgen.GeneratePlanet(viper.GetString("DatabaseConnectionString"))
 	if err != nil {
