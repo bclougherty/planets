@@ -3,11 +3,14 @@ package main
 import (
 	"flag"
 	"fmt"
+	"html/template"
 	"log"
+	"math/rand"
 	"net/http"
 	"os"
 	"path"
 	"runtime"
+	"time"
 
 	"github.com/octoberxp/planets/controllers"
 
@@ -25,6 +28,8 @@ func init() {
 }
 
 func main() {
+	rand.Seed(time.Now().UTC().UnixNano())
+
 	// Create configuration
 	viper.Set("AppRoot", os.ExpandEnv("."))
 
@@ -39,8 +44,12 @@ func main() {
 
 	viper.Set("FullViewPath", path.Join(viper.GetString("AppRoot"), viper.GetString("ViewPath")))
 
+	funcMap := template.FuncMap{
+		"safeHtml": glaze.SafeHTML,
+	}
+
 	// Instantiate controllers
-	public := controllers.NewPublicController()
+	public := controllers.NewPublicController(funcMap)
 
 	// Create routes
 	router := mux.NewRouter()

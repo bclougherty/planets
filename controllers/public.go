@@ -1,9 +1,9 @@
 package controllers
 
 import (
-	"math/rand"
+	"fmt"
+	"html/template"
 	"net/http"
-	"time"
 
 	"github.com/octoberxp/glaze"
 	"github.com/octoberxp/swplanetgen"
@@ -16,8 +16,8 @@ type Public struct {
 }
 
 // NewPublicController creates and returns the new public controller
-func NewPublicController() *Public {
-	controller, err := glaze.NewController(viper.GetString("FullViewPath"), "public")
+func NewPublicController(funcMap template.FuncMap) *Public {
+	controller, err := glaze.NewController(viper.GetString("FullViewPath"), "public", funcMap)
 	if err != nil {
 		panic(err)
 	}
@@ -64,6 +64,9 @@ func (controller *Public) Index(w http.ResponseWriter, r *http.Request) {
 			Error:       err,
 		}
 
-		controller.RenderTemplate(w, "index", viewData)
+		err = controller.RenderTemplate(w, "index", viewData)
+		if err != nil {
+			fmt.Println(err)
+		}
 	}
 }
