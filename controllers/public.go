@@ -16,13 +16,13 @@ type Public struct {
 }
 
 // NewPublicController creates and returns the new public controller
-func NewPublicController(funcMap template.FuncMap) *Public {
+func NewPublicController(funcMap template.FuncMap) (*Public, error) {
 	controller, err := glaze.NewController(viper.GetString("FullViewPath"), "public", funcMap)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 
-	return &Public{Controller: controller}
+	return &Public{Controller: controller}, nil
 }
 
 type indexData struct {
