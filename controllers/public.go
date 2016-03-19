@@ -12,17 +12,21 @@ import (
 
 // Public Controller
 type Public struct {
-	*glaze.Controller
+	*glaze.BaseController
 }
 
 // NewPublicController creates and returns the new public controller
-func NewPublicController(funcMap template.FuncMap) (*Public, error) {
+func NewPublicController(funcMap template.FuncMap) (Public, error) {
+	var p Public
+
 	controller, err := glaze.NewController(viper.GetString("FullViewPath"), "public", funcMap)
 	if err != nil {
-		return nil, err
+		return p, err
 	}
 
-	return &Public{Controller: controller}, nil
+	p.BaseController = controller
+
+	return p, nil
 }
 
 type indexData struct {
@@ -34,7 +38,7 @@ type indexData struct {
 }
 
 // Index page
-func (controller *Public) Index(w http.ResponseWriter, r *http.Request) {
+func (controller Public) Index(w http.ResponseWriter, r *http.Request) {
 	requestedParams := make(map[int]string)
 	possibleParams := []int{
 		swplanetgen.CategoryFunction,
@@ -61,7 +65,7 @@ func (controller *Public) Index(w http.ResponseWriter, r *http.Request) {
 			Error: err,
 		}
 
-		controller.RenderTemplate(w, "error", viewData)
+		controller.RenderHTML(w, "error", viewData)
 	} else {
 		viewData := &indexData{
 			Categories: map[string]*swplanetgen.Result{
@@ -82,7 +86,7 @@ func (controller *Public) Index(w http.ResponseWriter, r *http.Request) {
 			Error:       err,
 		}
 
-		err = controller.RenderTemplate(w, "index", viewData)
+		err = controller.RenderHTML(w, "index", viewData)
 		if err != nil {
 			fmt.Println(err)
 		}

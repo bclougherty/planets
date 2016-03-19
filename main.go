@@ -71,6 +71,7 @@ func startServer(c *cli.Context) {
 	// Instantiate controllers
 	templateFuncs := template.FuncMap{
 		"SafeHtml": glaze.SafeHTML,
+		"SafeHTML": glaze.SafeHTML,
 	}
 
 	public, err := controllers.NewPublicController(templateFuncs)
@@ -78,7 +79,7 @@ func startServer(c *cli.Context) {
 		panic(err)
 	}
 
-	allControllers := []*glaze.Controller{public}
+	allControllers := []glaze.Controller{public}
 
 	// Start glaze
 	err = glazeApp.ServeWithAutoRouting(allControllers)
